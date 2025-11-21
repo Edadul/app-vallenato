@@ -6,11 +6,14 @@ import Navbar from "../components/organism/Navbar";
 import SongCard from "../components/organism/SongCard";
 
 export default function HomeScreen() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState<Category>("Todos");
 
   const filteredSongs =
     category === "Todos"
-      ? SONGS
+      ? SONGS.filter((song) =>
+          song.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
       : SONGS.filter((song) => song.category === category);
 
   return (
@@ -34,6 +37,7 @@ export default function HomeScreen() {
         onCategoryChange={(cat) => {
           setCategory(cat as Category);
         }}
+        onSearchChange={(query) => setSearchQuery(query)}
       />
 
       <ScrollView contentContainerStyle={styles.content}>

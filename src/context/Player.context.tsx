@@ -33,7 +33,12 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     if (!isPlaying) return;
 
     const tick = setInterval(() => {
-      setPosition(player.currentTime ?? 0);
+      const t = player.currentTime ?? 0;
+      setPosition(t);
+
+      if (player.duration && t >= player.duration) {
+        setIsPlaying(false);
+      }
     }, 250);
 
     return () => clearInterval(tick);
@@ -48,7 +53,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       }
 
       const source = await getUri(songData.file);
-      await player.replace(source);
+      player.replace(source);
       setCurrentSong(songData);
       player.play();
       setIsPlaying(true);
@@ -66,9 +71,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function seekTo(value: number) {
+  async function seekTo(value: number) {
     try {
-      player.seekTo(value);
+      await player.seekTo(value);
       setPosition(value);
     } catch (err) {
       console.error("[SeekTo] Error seeking song:", err);

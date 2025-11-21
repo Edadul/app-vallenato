@@ -6,9 +6,11 @@ import Searchbar from "../molecule/Searchbar";
 export default function Navbar({
   categories,
   onCategoryChange,
+  onSearchChange,
 }: {
   categories: string[];
   onCategoryChange?: (category: string) => void;
+  onSearchChange?: (search: string) => void;
 }) {
   const [activeButton, setActiveButton] = useState<string>(categories[0]);
 
@@ -19,7 +21,7 @@ export default function Navbar({
 
   return (
     <View style={styles.container}>
-      <Searchbar />
+      <Searchbar onChangeText={onSearchChange} />
       <View style={styles.buttonsContainer}>
         {categories.map((category) => (
           <NavButton
