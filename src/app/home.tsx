@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { CATEGORIES, SONGS } from "../assets/songs/songs.data";
 import type { Category } from "../assets/songs/songs.types";
 import Navbar from "../components/organism/Navbar";
 import SongCard from "../components/organism/SongCard";
-import { CATEGORIES, SONGS } from "../data/songs";
 
 export default function HomeScreen() {
   const [category, setCategory] = useState<Category>("Todos");
@@ -41,6 +41,8 @@ export default function HomeScreen() {
           <SongCard key={song.id} song={song} />
         ))}
       </ScrollView>
+
+      {/* TODO: player controller over all screens */}
       {/* <View style={styles.player}>
         <FontAwesome5 name="step-backward" size={25} color="#ff2d88" />
         <Ionicons name="play-circle" size={48} color="#ff2d88" />
