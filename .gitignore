@@ -41,3 +41,19 @@ app-example
 # generated native folders
 /ios
 /android
+
+.vscode
+
+# media files
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.mp3
+*.wav
+*.flac
+*.m4a
+*.otf
+*.ttf
+*.zip
+
