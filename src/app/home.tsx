@@ -14,7 +14,11 @@ export default function HomeScreen() {
       ? SONGS.filter((song) =>
           song.title.toLowerCase().includes(searchQuery.toLowerCase())
         )
-      : SONGS.filter((song) => song.category === category);
+      : SONGS.filter(
+          (song) =>
+            song.category === category &&
+            song.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
   return (
     <View style={styles.container}>
