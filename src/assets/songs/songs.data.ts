@@ -1,7 +1,7 @@
 import cover2 from "../covers/16-TITULO-DE-AMOR-JSC-3577.jpg";
 import cover1 from "../covers/4-DOS-GRANDES-JSC-3544.jpg";
-import song1 from "../songs/A-Mi-Papá-Diomedes-Díaz-Colacho-Mendoza.mp3";
-import song2 from "../songs/Amarte-Más-No-Pude-Diomedes-Díaz-Juancho-Rois.mp3";
+import song1 from "./A-Mi-Papá-Diomedes-Díaz-Colacho-Mendoza.mp3";
+import song2 from "./Amarte-Más-No-Pude-Diomedes-Díaz-Juancho-Rois.mp3";
 import type { Category, Song } from "./songs.types";
 
 export const CATEGORIES: Category[] = [

@@ -1,13 +1,27 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Slider from "@react-native-community/slider";
 import { BlurView } from "expo-blur";
 import { useNavigation } from "expo-router";
+import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { usePlayer } from "../context/Player.context";
 
 export default function PlayerScreen() {
-  const { play, pause, currentSong, isPlaying } = usePlayer();
+  const [seek, setSeek] = useState<number | undefined>(undefined);
+  const { player, play, pause, seekTo, currentSong, isPlaying, currentTime } =
+    usePlayer();
 
   const navigation = useNavigation();
+
+  const handleSeekingUI = (value: number) => {
+    setSeek(value);
+  };
+
+  const formattedTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
 
   return (
     <View style={styles.container}>
@@ -40,8 +54,38 @@ export default function PlayerScreen() {
 
         {/* player controls */}
         <View style={styles.playerControlContainer}>
+          {/* barra de progreso */}
+          {/* TOOD: esto se puede extaer a un componente ProgressBar */}
+          <View style={styles.progressContainer}>
+            <Text style={styles.progressTimeText}>
+              {seek ? formattedTime(seek) : formattedTime(currentTime)}
+            </Text>
+            <Slider
+              style={{ flex: 1 }}
+              value={seek ?? currentTime}
+              minimumValue={0}
+              maximumValue={player.duration}
+              onValueChange={handleSeekingUI}
+              onSlidingComplete={(value) => {
+                try {
+                  seekTo(value);
+                  setSeek(undefined);
+                } catch {}
+              }}
+              minimumTrackTintColor="white"
+              thumbTintColor="white"
+            />
+            <Text style={styles.progressTimeText}>
+              {formattedTime(player.duration)}
+            </Text>
+          </View>
+
           <View style={styles.playerButtons}>
-            <Pressable>
+            <Pressable
+              onPress={() => {
+                seekTo(0);
+              }}
+            >
               <Ionicons name="play-back-circle" size={55} color="white" />
             </Pressable>
             <Pressable
@@ -116,8 +160,23 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   playerControlContainer: {
+    marginTop: 30,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  progressContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 30,
+    alignItems: "center",
+    paddingHorizontal: 40,
+    paddingVertical: 20,
+  },
+  progressTimeText: {
+    color: "white",
+    opacity: 0.7,
   },
   playerButtons: {
     flexDirection: "row",

@@ -1,14 +1,22 @@
 import { getUri } from "@/src/utils/getUri";
 import { useAudioPlayer } from "expo-audio";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Song } from "../assets/songs/songs.types";
 
 interface IPlayerContext {
   player: ReturnType<typeof useAudioPlayer>;
   play: (file: any) => void;
   pause: () => void;
+  seekTo: (value: number) => void;
   isPlaying: boolean;
   currentSong: Song | null;
+  currentTime: number;
 }
 
 const PlayerContext = createContext<IPlayerContext | null>(null);
@@ -17,6 +25,19 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const player = useAudioPlayer();
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+
+  // este useEffect se usa para actualizar la posición actual de la canción
+  // (tiempo transcurrido) cada 250ms
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const tick = setInterval(() => {
+      setPosition(player.currentTime ?? 0);
+    }, 250);
+
+    return () => clearInterval(tick);
+  }, [isPlaying, player]);
 
   async function play(songData: Song) {
     try {
@@ -36,12 +57,21 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function pause() {
+  function pause() {
     try {
-      await player.pause();
+      player.pause();
       setIsPlaying(false);
     } catch (err) {
       console.error("[Pausesong] Error pausing song:", err);
+    }
+  }
+
+  function seekTo(value: number) {
+    try {
+      player.seekTo(value);
+      setPosition(value);
+    } catch (err) {
+      console.error("[SeekTo] Error seeking song:", err);
     }
   }
 
@@ -51,8 +81,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         player,
         play,
         pause,
+        seekTo,
         isPlaying,
         currentSong,
+        currentTime: position,
       }}
     >
       {children}
