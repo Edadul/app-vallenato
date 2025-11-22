@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { CATEGORIES, SONGS } from "../assets/songs/songs.data";
 import type { Category } from "../assets/songs/songs.types";
 import Navbar from "../components/organism/Navbar";
@@ -8,6 +9,7 @@ import SongCard from "../components/organism/SongCard";
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState<Category>("Todos");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
   const filteredSongs =
     category === "Todos"
@@ -21,7 +23,7 @@ export default function HomeScreen() {
         );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
           source={require("../assets/ccmv_logo.png")}
@@ -42,12 +44,21 @@ export default function HomeScreen() {
           setCategory(cat as Category);
         }}
         onSearchChange={(query) => setSearchQuery(query)}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
       />
 
-      <ScrollView contentContainerStyle={styles.content}>
-        {filteredSongs.map((song) => (
-          <SongCard key={song.id} song={song} />
-        ))}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View
+          style={viewMode === "grid" ? styles.contentGrid : styles.contentList}
+        >
+          {filteredSongs.map((song) => (
+            <SongCard key={song.id} song={song} viewMode={viewMode} />
+          ))}
+        </View>
       </ScrollView>
 
       {/* TODO: player controller over all screens */}
@@ -56,7 +67,7 @@ export default function HomeScreen() {
         <Ionicons name="play-circle" size={48} color="#ff2d88" />
         <FontAwesome5 name="step-forward" size={25} color="#ff2d88" />
       </View> */}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -86,6 +97,16 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+    flexGrow: 1,
+  },
+  contentGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  contentList: {
+    flexDirection: "column",
+    gap: 12,
   },
   sectionTitle: {
     fontSize: 18,

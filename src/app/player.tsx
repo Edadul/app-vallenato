@@ -4,6 +4,7 @@ import { BlurView } from "expo-blur";
 import { useNavigation } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { usePlayer } from "../context/Player.context";
 
 export default function PlayerScreen() {
@@ -24,7 +25,7 @@ export default function PlayerScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Image style={styles.bgImg} source={currentSong?.cover} blurRadius={30} />
       <BlurView intensity={50} />
 
@@ -106,7 +107,7 @@ export default function PlayerScreen() {
           </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
